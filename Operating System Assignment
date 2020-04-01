@@ -1,0 +1,90 @@
+#include<stdio.h>
+#include <stdbool.h>
+int main() 
+{
+	 int Pr=5,Re=3;
+	 // Number of processes
+	 printf("Enter the number of process and resources to be allocated:	");
+	 scanf("%d%d",&Pr,&Re);
+	 const int P=Pr,R=Re;
+ 	                                    // Available no of resources
+	 int avail[15];
+	 printf("Enter the number of available resources:	");
+	 int i = 0;
+	 for(i=0; i<R; i++) {
+		scanf("%d",&avail[i]);
+   	}
+	                                      // Max no of resources which can be allocated
+	     int maxm[10][10];
+	     for(i=0; i<P; i++) {
+	 	printf("Enter the max no of  required resources for P%d:	",i+1);
+		for(int j=0; j<R; j++) {
+			scanf("%d",&maxm[i][j]);
+		   }
+	       }
+	                                     // Allocation of the Resources for processing
+	              int allot[10][10];
+	             for(i=0; i<P; i++) {
+	     	       printf("Enter the no of resources allocated by P%d:	",i+1);
+		            for(int j=0; j<R; j++) {
+		        	scanf("%d",&allot[i][j]);
+		         }
+                	}  
+	                 int need[P][R];
+
+	                                      // Calculating the Required Resources by Process(need)
+                 	for (int i = 0 ; i < P ; i++)
+	               	for (int j = 0 ; j < R ; j++)
+  
+			                                // Need of instance = maxm instance -  allocated instance
+			         need[i][j] = maxm[i][j] - allot[i][j];
+	                   bool finish[P] ;
+	 
+	                 int safeSeq[P];
+
+	                                                          // Copy of available resources
+	                  int work[R];
+	                   for(i=0; i<R; i++)
+	         	       work[i] = avail[i];
+
+                                                        	// while all processes are not finished!
+	                      int count = 0;
+                          while (count < P) {
+	                                                     	// Find a process which is not finish
+		                 bool found = false;
+		                for (int p = 0; p < P; p++) {
+		                                               	// checking process is finished or not
+			               if (finish[p] == 0) 
+			{
+				int j;
+				for (j = 0; j < R; j++)
+					if (need[p][j] > work[j])
+						break;
+
+				                                        // If all needs of p were satisfied.
+				if (j == R) 
+				{
+					for (int k = 0 ; k < R ; k++)
+						work[k] += allot[p][k];
+
+					                                   // Add this process to safe sequence.
+					safeSeq[count++] = p;
+					finish[p] = 1;
+
+					found = true;
+				}
+			}
+		}
+		if (found == false) {
+			printf("System is not in safe state");
+		}
+	}
+
+ 
+	                                                    // safe sequence will be as below
+	printf("System is in safe state\n");
+	printf("Sequence is: ");
+	for (int i = 0; i < P ; i++)
+		printf("P%d_____",safeSeq[i]+1);
+
+}
